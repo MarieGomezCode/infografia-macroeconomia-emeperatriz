@@ -1,0 +1,854 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Macromagnitudes Económicas</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Georgia', 'Garamond', serif;
+            background: linear-gradient(135deg, #A41E34 0%, #1C3A70 100%);
+            padding: 15px 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        
+        .contenedor {
+            background: #FFFFFF;
+            width: 100%;
+            max-width: 780px;
+            border-radius: 2px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+        
+        /* ENCABEZADO UNIVERSIDAD */
+        .encabezado {
+            background: linear-gradient(90deg, #A41E34 0%, #1C3A70 100%);
+            color: white;
+            padding: 25px 20px;
+            text-align: center;
+            border-bottom: 5px solid #C4AB97;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .encabezado::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 200"><defs><pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M 40 0 L 0 0 0 40" fill="none" stroke="white" stroke-width="0.5" opacity="0.1"/></pattern></defs><rect width="1200" height="200" fill="url(%23grid)"/></svg>');
+            pointer-events: none;
+        }
+        
+        .titulo-principal {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .titulo-principal h1 {
+            font-size: 2.2em;
+            font-weight: 700;
+            margin-bottom: 8px;
+            letter-spacing: 1px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        .titulo-principal p {
+            font-size: 1.1em;
+            font-weight: 300;
+            letter-spacing: 0.5px;
+            margin-bottom: 5px;
+        }
+        
+        .linea-divisor {
+            height: 2px;
+            background: #C4AB97;
+            margin: 12px auto;
+            width: 150px;
+        }
+        
+        .subtitulo-encabezado {
+            font-size: 0.95em;
+            font-style: italic;
+            opacity: 0.95;
+        }
+        
+        /* CONTENIDO PRINCIPAL */
+        .contenido {
+            padding: 30px 20px;
+        }
+        
+        /* SECCIÓN DEFINICIÓN */
+        .seccion-definicion {
+            background: #F5F5F5;
+            padding: 25px;
+            margin-bottom: 25px;
+            border-left: 5px solid #A41E34;
+            border-radius: 2px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .seccion-definicion h2 {
+            font-size: 1.6em;
+            color: #1C3A70;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .icono-grande {
+            font-size: 2em;
+            color: #A41E34;
+            width: 60px;
+            height: 60px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 3px 8px rgba(164, 30, 52, 0.2);
+        }
+        
+        .seccion-definicion p {
+            font-size: 1em;
+            color: #333333;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+        
+        /* IMAGEN PRINCIPAL MÁS GRANDE */
+        .imagen-principal {
+            width: 100%;
+            height: 350px;
+            border-radius: 2px;
+            overflow: hidden;
+            margin: 15px 0;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+        }
+        
+        .imagen-principal img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        /* GRID DE MACROMAGNITUDES - VERTICAL */
+        .grid-macromagnitudes {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin: 30px 0;
+        }
+        
+        .macromagnitud {
+            background: linear-gradient(135deg, #A41E34 0%, #8B1628 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 2px;
+            box-shadow: 0 4px 10px rgba(164, 30, 52, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .macromagnitud::before {
+            content: "";
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 120px;
+            height: 120px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+        }
+        
+        .macromagnitud:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(164, 30, 52, 0.3);
+        }
+        
+        .macromagnitud-icono {
+            font-size: 2.2em;
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .macromagnitud-titulo {
+            font-size: 1.4em;
+            font-weight: 700;
+            margin-bottom: 8px;
+            letter-spacing: 1px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .macromagnitud-desc {
+            font-size: 0.95em;
+            line-height: 1.5;
+            position: relative;
+            z-index: 1;
+            font-weight: 300;
+        }
+        
+        /* ALTERNANCIA DE COLORES */
+        .macromagnitud:nth-child(2) {
+            background: linear-gradient(135deg, #1C3A70 0%, #152850 100%);
+            box-shadow: 0 4px 10px rgba(28, 58, 112, 0.2);
+        }
+        
+        .macromagnitud:nth-child(2):hover {
+            box-shadow: 0 6px 15px rgba(28, 58, 112, 0.3);
+        }
+        
+        .macromagnitud:nth-child(3) {
+            background: linear-gradient(135deg, #C4AB97 0%, #A89980 100%);
+            box-shadow: 0 4px 10px rgba(196, 171, 151, 0.3);
+        }
+        
+        .macromagnitud:nth-child(3):hover {
+            box-shadow: 0 6px 15px rgba(196, 171, 151, 0.4);
+        }
+        
+        /* FLUJO DE RELACIONES */
+        .seccion-flujo {
+            background: linear-gradient(135deg, #F5F5F5 0%, #EEEEEE 100%);
+            padding: 25px;
+            margin: 30px 0;
+            border-radius: 2px;
+            border: 2px solid #1C3A70;
+        }
+        
+        .seccion-flujo h2 {
+            font-size: 1.5em;
+            color: #1C3A70;
+            text-align: center;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .flujo-contenedor {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .elemento-flujo {
+            background: white;
+            padding: 20px;
+            border-radius: 2px;
+            text-align: center;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            border-top: 4px solid #A41E34;
+            position: relative;
+        }
+        
+        .elemento-flujo.alt {
+            border-top-color: #1C3A70;
+        }
+        
+        .elemento-flujo.beige {
+            border-top-color: #C4AB97;
+        }
+        
+        .elemento-flujo-icono {
+            font-size: 1.8em;
+            margin-bottom: 8px;
+            color: #A41E34;
+        }
+        
+        .elemento-flujo.alt .elemento-flujo-icono {
+            color: #1C3A70;
+        }
+        
+        .elemento-flujo.beige .elemento-flujo-icono {
+            color: #C4AB97;
+        }
+        
+        .elemento-flujo-titulo {
+            font-weight: 700;
+            color: #1C3A70;
+            font-size: 1.2em;
+            margin-bottom: 6px;
+            letter-spacing: 0.5px;
+        }
+        
+        .elemento-flujo-desc {
+            font-size: 0.9em;
+            color: #666666;
+            line-height: 1.4;
+        }
+        
+        .flecha-flujo {
+            font-size: 1.5em;
+            color: #A41E34;
+            font-weight: bold;
+            text-align: center;
+            margin: 5px 0;
+        }
+        
+        /* CARACTERÍSTICAS Y OBJETIVOS */
+        .grid-dos {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin: 30px 0;
+        }
+        
+        .tarjeta-caracteristica {
+            background: white;
+            padding: 25px;
+            border-radius: 2px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            border-left: 5px solid #A41E34;
+        }
+        
+        .tarjeta-caracteristica.alt {
+            border-left-color: #1C3A70;
+        }
+        
+        .tarjeta-caracteristica h3 {
+            font-size: 1.4em;
+            color: #1C3A70;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .tarjeta-caracteristica-icono {
+            font-size: 1.6em;
+            color: #A41E34;
+        }
+        
+        .tarjeta-caracteristica.alt .tarjeta-caracteristica-icono {
+            color: #1C3A70;
+        }
+        
+        .lista-items {
+            list-style: none;
+        }
+        
+        .lista-items li {
+            padding: 8px 0;
+            padding-left: 20px;
+            position: relative;
+            font-size: 0.95em;
+            color: #333333;
+            line-height: 1.5;
+        }
+        
+        .lista-items li:before {
+            content: "◆";
+            position: absolute;
+            left: 0;
+            color: #A41E34;
+            font-size: 0.7em;
+        }
+        
+        .tarjeta-caracteristica.alt .lista-items li:before {
+            color: #1C3A70;
+        }
+        
+        /* PIE DE PÁGINA */
+        .pie {
+            background: #F5F5F5;
+            padding: 25px;
+            margin-top: 35px;
+            border-top: 5px solid #C4AB97;
+        }
+        
+        .pie h3 {
+            font-size: 1.2em;
+            color: #1C3A70;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .pie-icono {
+            font-size: 1.5em;
+            color: #A41E34;
+        }
+        
+        .fuentes {
+            font-size: 0.9em;
+            color: #555555;
+            line-height: 1.6;
+        }
+        
+        .creditos {
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid #DDDDDD;
+            font-size: 0.85em;
+            color: #888888;
+            font-style: italic;
+        }
+        
+        /* GRÁFICOS EN VERTICAL */
+        .graficos-contenedor {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin: 30px 0;
+        }
+        
+        .grafico {
+            background: white;
+            padding: 18px;
+            border-radius: 2px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            border: 2px solid #1C3A70;
+        }
+        
+        .grafico h3 {
+            font-size: 1.2em;
+            color: #1C3A70;
+            margin-bottom: 12px;
+            text-align: center;
+        }
+        
+        .canvas-contenedor {
+            width: 100%;
+            height: 220px;
+            position: relative;
+        }
+        
+        /* SECCIONES CON IMAGEN Y TEXTO */
+        .seccion-imagen {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin: 25px 0;
+        }
+        
+        .seccion-imagen.invertida {
+            flex-direction: column;
+        }
+        
+        .texto-imagen {
+            flex: 1;
+        }
+        
+        .imagen-lateral {
+            flex: 1;
+            height: 337px;
+            width: 397px;
+            border-radius: 2px;
+            overflow: hidden;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            margin: 0 auto;
+        }
+        
+        .imagen-lateral img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        /* VARIABLES COMPLEMENTARIAS */
+        .variables-complementarias {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .variable-item {
+            background: white;
+            padding: 15px;
+            border-radius: 2px;
+            text-align: center;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            border-top: 3px solid #A41E34;
+        }
+        
+        .variable-item.alt {
+            border-top-color: #1C3A70;
+        }
+        
+        .variable-item.beige {
+            border-top-color: #C4AB97;
+        }
+        
+        .variable-icono {
+            font-size: 1.5em;
+            margin-bottom: 8px;
+            color: #A41E34;
+        }
+        
+        .variable-item.alt .variable-icono {
+            color: #1C3A70;
+        }
+        
+        .variable-item.beige .variable-icono {
+            color: #C4AB97;
+        }
+        
+        .variable-titulo {
+            font-weight: 700;
+            color: #1C3A70;
+            font-size: 1em;
+            margin-bottom: 5px;
+        }
+        
+        .variable-desc {
+            font-size: 0.85em;
+            color: #666666;
+            line-height: 1.3;
+        }
+        
+        /* RESPONSIVE PARA PANTALLAS MÁS PEQUEÑAS */
+        @media (max-width: 480px) {
+            .encabezado {
+                padding: 20px 15px;
+            }
+            
+            .titulo-principal h1 {
+                font-size: 1.8em;
+            }
+            
+            .contenido {
+                padding: 20px 15px;
+            }
+            
+            .imagen-principal {
+                height: 200px;
+            }
+            
+            .variables-complementarias {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="contenedor">
+        <!-- ENCABEZADO -->
+        <div class="encabezado">
+            <div class="titulo-principal">
+                <h1><i class="fas fa-chart-line"></i> MACROMAGNITUDES ECONÓMICAS</h1>
+                <p>Análisis Integral de Indicadores Macroeconómicos</p>
+                <div class="linea-divisor"></div>
+                <p class="subtitulo-encabezado">Fundamentos de la medición del desempeño económico nacional</p>
+            </div>
+        </div>
+        
+        <!-- CONTENIDO -->
+        <div class="contenido">
+            <!-- DEFINICIÓN -->
+            <div class="seccion-definicion">
+                <h2>
+                    <div class="icono-grande">
+                        <i class="fas fa-book-open"></i>
+                    </div>
+                    Conceptualización Fundamental
+                </h2>
+                <p>Las macromagnitudes económicas constituyen medidas agregadas que cuantifican el desempeño económico de una nación, región o comunidad económica en su totalidad. Estas variables reflejan la dimensión global de la actividad económica, permitiendo evaluar el crecimiento, estabilidad y bienestar económico de una sociedad.</p>
+                <p>Representan la síntesis estadística de millones de transacciones económicas, transformándolas en indicadores estratégicos para la toma de decisiones tanto de política pública como de inversión privada.</p>
+                
+                <div class="imagen-principal">
+                    <img src="./4.png" alt="Análisis de datos económicos">
+                </div>
+            </div>
+            
+            <!-- GRID DE MACROMAGNITUDES PRINCIPALES - VERTICAL -->
+            <div class="grid-macromagnitudes">
+                <div class="macromagnitud">
+                    <div class="macromagnitud-icono">
+                        <i class="fas fa-building"></i>
+                    </div>
+                    <div class="macromagnitud-titulo">PIB</div>
+                    <div class="macromagnitud-desc">Producto Interno Bruto: Valor agregado de todos los bienes y servicios finales producidos dentro del territorio nacional, independientemente de la nacionalidad de los productores.</div>
+                </div>
+                
+                <div class="macromagnitud">
+                    <div class="macromagnitud-icono">
+                        <i class="fas fa-globe"></i>
+                    </div>
+                    <div class="macromagnitud-titulo">PNB</div>
+                    <div class="macromagnitud-desc">Producto Nacional Bruto: Suma del valor de bienes y servicios producidos por factores de producción nacionales, sin considerar su ubicación geográfica.</div>
+                </div>
+                
+                <div class="macromagnitud">
+                    <div class="macromagnitud-icono">
+                        <i class="fas fa-wallet"></i>
+                    </div>
+                    <div class="macromagnitud-titulo">Renta Personal</div>
+                    <div class="macromagnitud-desc">Ingreso agregado recibido por los individuos de todas las fuentes económicas, constituyendo el poder de compra disponible de la población.</div>
+                </div>
+            </div>
+            
+            <!-- SECCIÓN CON IMAGEN Y TEXTO -->
+            <div class="seccion-imagen">
+                <div class="texto-imagen">
+                    <h2>Relación PIB vs PNB</h2>
+                    <p>La diferencia fundamental entre el Producto Interno Bruto (PIB) y el Producto Nacional Bruto (PNB) radica en el criterio territorial frente al criterio de nacionalidad.</p>
+                    <p>Mientras el PIB mide la producción dentro de las fronteras de un país, el PNB considera la producción de los factores nacionales, independientemente de su ubicación geográfica.</p>
+                    <p>La relación se expresa mediante la fórmula: PNB = PIB + Rentas de factores nacionales en el extranjero - Rentas de factores extranjeros en el país.</p>
+                </div>
+                <div class="imagen-lateral">
+                    <img src="./pi.png" alt="Análisis de datos económicos">
+                </div>
+            </div>
+            
+            <!-- FLUJO Y RELACIONES -->
+            <div class="seccion-flujo">
+                <h2>
+                    <i class="fas fa-network-wired"></i>
+                    Estructura de Relaciones Económicas
+                </h2>
+                <div class="flujo-contenedor">
+                    <div class="elemento-flujo">
+                        <div class="elemento-flujo-icono">
+                            <i class="fas fa-coins"></i>
+                        </div>
+                        <div class="elemento-flujo-titulo">Producción</div>
+                        <div class="elemento-flujo-desc">Generación de bienes y servicios en el territorio</div>
+                    </div>
+                    
+                    <div class="flecha-flujo">↓</div>
+                    
+                    <div class="elemento-flujo alt">
+                        <div class="elemento-flujo-icono">
+                            <i class="fas fa-chart-bar"></i>
+                        </div>
+                        <div class="elemento-flujo-titulo">Ingreso</div>
+                        <div class="elemento-flujo-desc">Retribución a factores de producción</div>
+                    </div>
+                    
+                    <div class="flecha-flujo">↓</div>
+                    
+                    <div class="elemento-flujo beige">
+                        <div class="elemento-flujo-icono">
+                            <i class="fas fa-credit-card"></i>
+                        </div>
+                        <div class="elemento-flujo-titulo">Gasto</div>
+                        <div class="elemento-flujo-desc">Consumo e inversión de bienes y servicios</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- GRÁFICOS IMPORTANTES - VERTICAL -->
+            <div class="graficos-contenedor">
+                <div class="grafico">
+                    <h3>Composición del PIB por Componentes</h3>
+                    <div class="canvas-contenedor">
+                        <canvas id="graficoPIB"></canvas>
+                    </div>
+                </div>
+                
+                <div class="grafico">
+                    <h3>Evolución del PIB Real vs Nominal</h3>
+                    <div class="canvas-contenedor">
+                        <canvas id="graficoEvolucion"></canvas>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- CARACTERÍSTICAS Y OBJETIVOS -->
+            <div class="grid-dos">
+                <div class="tarjeta-caracteristica">
+                    <h3>
+                        <span class="tarjeta-caracteristica-icono">
+                            <i class="fas fa-cogs"></i>
+                        </span>
+                        Características Principales
+                    </h3>
+                    <ul class="lista-items">
+                        <li>Medidas agregadas de alcance nacional</li>
+                        <li>Reflejan el comportamiento económico global</li>
+                        <li>Permiten análisis temporal comparativo</li>
+                        <li>Fundamento para políticas macroeconómicas</li>
+                        <li>Expresadas en unidades monetarias</li>
+                        <li>Actualizadas periódicamente por organismos oficiales</li>
+                    </ul>
+                </div>
+                
+                <div class="tarjeta-caracteristica alt">
+                    <h3>
+                        <span class="tarjeta-caracteristica-icono">
+                            <i class="fas fa-target"></i>
+                        </span>
+                        Objetivos Estratégicos
+                    </h3>
+                    <ul class="lista-items">
+                        <li>Cuantificar el crecimiento económico</li>
+                        <li>Evaluar niveles de bienestar social</li>
+                        <li>Orientar decisiones de política pública</li>
+                        <li>Realizar comparaciones internacionales</li>
+                        <li>Identificar ciclos económicos</li>
+                        <li>Sustentar análisis de inversión</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- SECCIÓN CON IMAGEN Y TEXTO INVERTIDA -->
+            <div class="seccion-imagen invertida">
+                <div class="texto-imagen">
+                    <h2>Flujo Circular de la Renta</h2>
+                    <p>El flujo circular de la renta representa las interrelaciones entre los diferentes agentes económicos: familias, empresas, sector público y sector exterior.</p>
+                    <p>Este modelo ilustra cómo la producción genera ingresos que se convierten en gasto, cerrando el ciclo económico. La igualdad fundamental de la contabilidad nacional establece que Producción = Ingreso = Gasto.</p>
+                    <p>Los tres métodos de cálculo del PIB (producción, renta y gasto) son equivalentes gracias a esta relación circular.</p>
+                </div>
+                <div class="imagen-lateral">
+                    <img src="./renta.png" alt="Flujo económico circular">
+                </div>
+            </div>
+            
+            <!-- VARIABLES COMPLEMENTARIAS -->
+            <div class="seccion-flujo" style="margin-top: 30px;">
+                <h2>
+                    <i class="fas fa-sliders-h"></i>
+                    Variables Económicas Complementarias
+                </h2>
+                <div class="variables-complementarias">
+                    <div class="variable-item">
+                        <div class="variable-icono">
+                            <i class="fas fa-percent"></i>
+                        </div>
+                        <div class="variable-titulo">Inflación</div>
+                        <div class="variable-desc">Aumento general de precios</div>
+                    </div>
+                    
+                    <div class="variable-item alt">
+                        <div class="variable-icono">
+                            <i class="fas fa-briefcase"></i>
+                        </div>
+                        <div class="variable-titulo">Empleo</div>
+                        <div class="variable-desc">Ocupación laboral agregada</div>
+                    </div>
+                    
+                    <div class="variable-item beige">
+                        <div class="variable-icono">
+                            <i class="fas fa-shopping-cart"></i>
+                        </div>
+                        <div class="variable-titulo">Consumo</div>
+                        <div class="variable-desc">Gasto agregado de hogares</div>
+                    </div>
+                    
+                    <div class="variable-item">
+                        <div class="variable-icono">
+                            <i class="fas fa-industry"></i>
+                        </div>
+                        <div class="variable-titulo">Inversión</div>
+                        <div class="variable-desc">Capital productivo bruto</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- PIE DE PÁGINA -->
+        <div class="pie">
+            <h3>
+                <span class="pie-icono">
+                    <i class="fas fa-book"></i>
+                </span>
+                Fuentes de Información
+            </h3>
+            <div class="fuentes">
+                <p><strong>Materiales de referencia consultados:</strong></p>
+                <p>• Lecturas académicas: Macromagnitudes Económicas Fundamentales<br>
+                • Producto Nacional y Renta Personal: Análisis Conceptual<br>
+                • Definiciones e indicadores de PIB, PNB y Renta Disponible<br>
+                • Teoría macroeconómica: Agregados económicos y medición nacional</p>
+                <div class="creditos">
+                    <p><i class="fas fa-certificate"></i> EMPERATRIZ GOMEZ AVILA CÓDIGO: 6904291 | Compilación de conceptos macroeconómicos | Año 2025</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Gráfico de composición del PIB
+        const ctxPIB = document.getElementById('graficoPIB').getContext('2d');
+        const graficoPIB = new Chart(ctxPIB, {
+            type: 'doughnut',
+            data: {
+                labels: ['Consumo Privado', 'Inversión', 'Gasto Público', 'Exportaciones Netas'],
+                datasets: [{
+                    data: [58, 18, 19, 5],
+                    backgroundColor: [
+                        '#A41E34',
+                        '#1C3A70',
+                        '#C4AB97',
+                        '#2E8B57'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    },
+                    title: {
+                        display: false
+                    }
+                }
+            }
+        });
+
+        // Gráfico de evolución del PIB
+        const ctxEvolucion = document.getElementById('graficoEvolucion').getContext('2d');
+        const graficoEvolucion = new Chart(ctxEvolucion, {
+            type: 'line',
+            data: {
+                labels: ['2018', '2019', '2020', '2021', '2022', '2023'],
+                datasets: [{
+                    label: 'PIB Nominal',
+                    data: [100, 105, 95, 110, 120, 130],
+                    borderColor: '#A41E34',
+                    backgroundColor: 'rgba(164, 30, 52, 0.1)',
+                    tension: 0.3,
+                    fill: true
+                }, {
+                    label: 'PIB Real',
+                    data: [100, 103, 90, 98, 105, 112],
+                    borderColor: '#1C3A70',
+                    backgroundColor: 'rgba(28, 58, 112, 0.1)',
+                    tension: 0.3,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: false,
+                        title: {
+                            display: true,
+                            text: 'Índice (2018=100)'
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
